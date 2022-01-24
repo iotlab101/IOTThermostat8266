@@ -1,6 +1,5 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <IBMIOTDevice7.h>
+#include <IBMIOTF8266.h>
 #include <Wire.h>
 #include <DHTesp.h>
 #include <SSD1306.h>
@@ -8,10 +7,6 @@
 SSD1306             display(0x3c, 4, 5, GEOMETRY_128_32);
 
 String user_html = ""
-    "<p><input type='text' name='org' placeholder='org'>"
-    "<p><input type='text' name='devType' placeholder='Device Type'>"
-    "<p><input type='text' name='devId' placeholder='Device Id'>"
-    "<p><input type='text' name='token' placeholder='Device Token'>"
     "<p><input type='text' name='meta.pubInterval' placeholder='Publish Interval'>";
 
 char*               ssid_pfix = (char*)"IOTThermostat";
@@ -87,8 +82,6 @@ void publishData() {
 
 void handleUserCommand(JsonDocument* root) {
     JsonObject d = (*root)["d"];
-    // put code for the user command here, and put the following
-    // code if any of device status changes to notify the change
 
     if(d.containsKey("target")) {
         tgtT = d["target"];
@@ -132,10 +125,9 @@ void setup() {
     display.display();
 
     initDevice();
-    // *** If no "config" is found or "config" is not "done", run configDevice ***
-    if(!cfg.containsKey("config") || strcmp((const char*)cfg["config"], "done")) {
-        iotConfigDevice();
-    }
+    // If not configured it'll be configured and rebooted in the initDevice(),
+    // If configured, initDevice will set the proper setting to cfg variable
+
     WiFi.mode(WIFI_STA);
     WiFi.begin((const char*)cfg["ssid"], (const char*)cfg["w_pw"]);
     while (WiFi.status() != WL_CONNECTED) {
@@ -148,12 +140,7 @@ void setup() {
     pubInterval = meta.containsKey("pubInterval") ? atoi((const char*)meta["pubInterval"]) : 0;
     lastPublishMillis = - pubInterval;
     
-    sprintf(iot_server, "%s.messaging.internetofthings.ibmcloud.com", (const char*)cfg["org"]);
-    if (!espClient.connect(iot_server, 8883)) {
-        Serial.println("connection failed");
-        return;
-    }
-    client.setServer(iot_server, 8883);   //IOT
+    set_iot_server();
     client.setCallback(message);
     iot_connect();
 }
