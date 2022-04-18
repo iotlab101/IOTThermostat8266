@@ -10,11 +10,8 @@ String user_html = "";
 
 char*               ssid_pfix = (char*)"IOTThermostat";
 unsigned long       lastPublishMillis = - pubInterval;
-unsigned long       lastClicked = 0;
-int                 clicked = 0;
 const int           pulseA = 12;
 const int           pulseB = 13;
-const int           pushSW = 2;
 volatile int        lastEncoded = 0;
 volatile long       encoderValue = 70;
 
@@ -61,7 +58,6 @@ void publishData() {
     JsonObject data = root.createNestedObject("d");
     char dht_buffer[10];
     char dht_buffer2[10];
-    char dht_buffer3[10];
 
     gettemperature();
     display.setColor(BLACK);
@@ -71,15 +67,11 @@ void publishData() {
     display.drawString(80, 11, dht_buffer);
     data["temperature"] = dht_buffer;
 
-    sprintf(dht_buffer3, "%2.1f", humidity);
-    data["humidity"] = dht_buffer3;
-
     tgtT = map(encoderValue, 0, 255, 10, 50);
     sprintf(dht_buffer2, "%2.1f", tgtT);
     data["target"] = dht_buffer2;
     display.drawString(80, 22, dht_buffer2);
     display.display();
-    data["rotary"] = encoderValue;
 
     serializeJson(root, msgBuffer);
     client.publish(publishTopic, msgBuffer);
@@ -106,7 +98,7 @@ void message(char* topic, byte* payload, unsigned int payloadLength) {
     }
 
     handleIOTCommand(topic, &root);
-    if (!strcmp(updateTopic, topic)) {
+    if (!strncmp(updateTopic, topic, cmdBaseLen)) {
         // user variable update
     } else if (!strncmp(commandTopic, topic, cmdBaseLen)) {            // strcmp return 0 if both string matches
         handleUserCommand(&root);
@@ -160,4 +152,3 @@ void loop() {
         lastPublishMillis = millis();
     }
 }
-
