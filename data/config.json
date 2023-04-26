@@ -1,12 +1,11 @@
 {
-   "meta":{
-      "pubInterval":"5000"
+   "meta": {
+       "pubInterval": "5000"
    },
-   "ssid":"IoT518",
-   "w_pw":"iot123456",
-   "org":"m1urkr",
-   "devType":"vDev",
-   "devId":"vThermo",
-   "token":"passw0rd",
-   "config":"done"
+   "ssid": "yourAP",
+   "w_pw": "APPassword",
+   "broker": "your io7 cloud",
+   "devId": "neo",
+   "token": "neo",
+   "config": "done"
 }

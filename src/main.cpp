@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <IBMIOTF8266.h>
+#include <IO7F8266.h>
 #include <Wire.h>
 #include <DHTesp.h>
 #include <SSD1306.h>
@@ -8,8 +8,8 @@ SSD1306             display(0x3c, 4, 5, GEOMETRY_128_32);
 
 String user_html = "";
 
-char*               ssid_pfix = (char*)"IOTThermostat";
-unsigned long       lastPublishMillis = - pubInterval;
+char* ssid_pfix = (char*)"IOTThermostat";
+unsigned long lastPublishMillis = -pubInterval;
 const int           pulseA = 12;
 const int           pulseB = 13;
 volatile int        lastEncoded = 0;
@@ -74,10 +74,10 @@ void publishData() {
     display.display();
 
     serializeJson(root, msgBuffer);
-    client.publish(publishTopic, msgBuffer);
+    client.publish(evtTopic, msgBuffer);
 }
 
-void handleUserCommand(JsonDocument* root) {
+void handleUserCommand(char* topic, JsonDocument* root) {
     JsonObject d = (*root)["d"];
 
     if(d.containsKey("target")) {
@@ -87,27 +87,8 @@ void handleUserCommand(JsonDocument* root) {
     }
 }
 
-void message(char* topic, byte* payload, unsigned int payloadLength) {
-    byte2buff(msgBuffer, payload, payloadLength);
-    StaticJsonDocument<512> root;
-    DeserializationError error = deserializeJson(root, String(msgBuffer));
-  
-    if (error) {
-        Serial.println("handleCommand: payload parse FAILED");
-        return;
-    }
-
-    handleIOTCommand(topic, &root);
-    if (!strncmp(updateTopic, topic, cmdBaseLen)) {
-        // user variable update
-    } else if (!strncmp(commandTopic, topic, cmdBaseLen)) {            // strcmp return 0 if both string matches
-        handleUserCommand(&root);
-    }
-}
-
 void setup() {
     Serial.begin(115200);
-
     pinMode(pulseA, INPUT_PULLUP);
     pinMode(pulseB, INPUT_PULLUP);
     attachInterrupt(pulseA, handleRotary, CHANGE);
@@ -122,8 +103,9 @@ void setup() {
     display.display();
 
     initDevice();
-    // If not configured it'll be configured and rebooted in the initDevice(),
-    // If configured, initDevice will set the proper setting to cfg variable
+    JsonObject meta = cfg["meta"];
+    pubInterval = meta.containsKey("pubInterval") ? meta["pubInterval"] : 0;
+    lastPublishMillis = -pubInterval;
 
     WiFi.mode(WIFI_STA);
     WiFi.begin((const char*)cfg["ssid"], (const char*)cfg["w_pw"]);
@@ -131,14 +113,12 @@ void setup() {
         delay(500);
         Serial.print(".");
     }
-    // main setup
-    Serial.printf("\nIP address : "); Serial.println(WiFi.localIP());
-    JsonObject meta = cfg["meta"];
-    pubInterval = meta.containsKey("pubInterval") ? atoi((const char*)meta["pubInterval"]) : 0;
-    lastPublishMillis = - pubInterval;
-    
+
+    Serial.printf("\nIP address : ");
+    Serial.println(WiFi.localIP());
+
+    userCommand = handleUserCommand;
     set_iot_server();
-    client.setCallback(message);
     iot_connect();
 }
 
@@ -146,6 +126,7 @@ void loop() {
     if (!client.connected()) {
         iot_connect();
     }
+
     client.loop();
     if ((pubInterval != 0) && (millis() - lastPublishMillis > pubInterval)) {
         publishData();
