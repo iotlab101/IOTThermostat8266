@@ -1,1 +1,1 @@
-IBM IOT Thermostat Device
+io7 IOT Thermostat Device
