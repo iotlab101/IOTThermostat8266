@@ -5,6 +5,9 @@
 #include <SSD1306.h>
 
 SSD1306             display(0x3c, 4, 5, GEOMETRY_128_32);
+                    //      |     |  5 -> i2c scl
+                    //      |     4 -> i2c sda
+                    //      0x32 -> i2c address
 
 String user_html = "";
 
