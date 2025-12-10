@@ -3,6 +3,7 @@ io7 IOT Thermostat Device
 
 This is an io7 IoT Thermostat and a part of io7 IoT Platform sample project.
 
+<img width="600" height="353" alt="Screenshot 2025-12-10 at 6 30 20 PM" src="https://github.com/user-attachments/assets/23fc020b-c9df-42b6-90f0-751013316e54" />
 <img width="923" height="405" alt="Screenshot 2025-12-10 at 5 17 21 PM" src="https://github.com/user-attachments/assets/c87441ca-55bf-43d5-9eb7-016c21a3eedb" />
 
 * It reports its status every predefined interval to the io7 IoT Platform, ie. valve on/off status.
