@@ -1,256 +1,24 @@
 [
     {
-        "id": "564bee57072d1e51",
-        "type": "tab",
-        "label": "Thermostat",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "2a0cd17675ec287f",
-        "type": "mqtt out",
-        "z": "564bee57072d1e51",
-        "name": "valve",
-        "topic": "iot3/valve/cmd/power/fmt/json",
-        "qos": "0",
-        "retain": "false",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "058eb66efff7027a",
-        "x": 710,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "abcd9fb7c294f6cd",
-        "type": "mqtt in",
-        "z": "564bee57072d1e51",
-        "name": "thermostat",
-        "topic": "iot3/thermostat/evt/status/fmt/json",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "058eb66efff7027a",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 80,
-        "y": 240,
-        "wires": [
-            [
-                "47e02b3278e24937",
-                "fa91568bdda49290"
-            ]
-        ]
-    },
-    {
-        "id": "482353c0ef2c88d4",
-        "type": "mqtt out",
-        "z": "564bee57072d1e51",
-        "name": "thermostat",
-        "topic": "iot3/thermostat/cmd/power/fmt/json",
-        "qos": "0",
-        "retain": "false",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "058eb66efff7027a",
-        "x": 730,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "a623c6895fbb9437",
-        "type": "ui_slider",
-        "z": "564bee57072d1e51",
-        "name": "",
-        "label": "target",
-        "tooltip": "",
-        "group": "78f185e02cacef3a",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "outs": "end",
-        "topic": "topic",
-        "topicType": "msg",
-        "min": 0,
-        "max": "50",
-        "step": 1,
-        "className": "",
-        "x": 390,
-        "y": 240,
-        "wires": [
-            [
-                "a75fbf4e41599a21"
-            ]
-        ]
-    },
-    {
         "id": "47e02b3278e24937",
         "type": "function",
         "z": "564bee57072d1e51",
         "name": "Parse",
-        "func": "if(typeof msg.payload === 'string') msg.payload = JSON.parse(msg.payload);\n\nlet current = {\n    payload : msg.payload.d.temperature\n}\nmsg.payload = msg.payload.d.target;\nreturn [msg, current];",
+        "func": "let current = {\n    payload : msg.payload.d.temperature\n}\nmsg.payload = msg.payload.d.target;\nreturn [msg, current];",
         "outputs": 2,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 210,
-        "y": 240,
+        "x": 370,
+        "y": 340,
         "wires": [
             [
-                "a623c6895fbb9437"
+                "cf76d755451f19c2"
             ],
             [
-                "e728037ee118446b"
-            ]
-        ]
-    },
-    {
-        "id": "a75fbf4e41599a21",
-        "type": "function",
-        "z": "564bee57072d1e51",
-        "name": "Stringify 2",
-        "func": "if(typeof msg.payload === 'string') msg.payload = JSON.parse(msg.payload);\nmsg.payload = {\n    d: { target : msg.payload}\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 550,
-        "y": 240,
-        "wires": [
-            [
-                "482353c0ef2c88d4"
-            ]
-        ]
-    },
-    {
-        "id": "e728037ee118446b",
-        "type": "ui_gauge",
-        "z": "564bee57072d1e51",
-        "name": "",
-        "group": "78f185e02cacef3a",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "gtype": "gage",
-        "title": "gauge",
-        "label": "units",
-        "format": "{{value}}°C",
-        "min": 0,
-        "max": "50",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "",
-        "seg2": "",
-        "diff": false,
-        "className": "",
-        "x": 390,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "617fc19c7c2dd3e3",
-        "type": "mqtt in",
-        "z": "564bee57072d1e51",
-        "name": "valve",
-        "topic": "iot3/valve/evt/status/fmt/json",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "058eb66efff7027a",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 70,
-        "y": 120,
-        "wires": [
-            [
-                "c51965c804478af9"
-            ]
-        ]
-    },
-    {
-        "id": "ba1f80572ba8191e",
-        "type": "ui_switch",
-        "z": "564bee57072d1e51",
-        "name": "",
-        "label": "valve",
-        "tooltip": "",
-        "group": "78f185e02cacef3a",
-        "order": 2,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "true",
-        "topic": "topic",
-        "topicType": "msg",
-        "style": "",
-        "onvalue": "on",
-        "onvalueType": "str",
-        "onicon": "",
-        "oncolor": "",
-        "offvalue": "off",
-        "offvalueType": "str",
-        "officon": "",
-        "offcolor": "",
-        "animate": false,
-        "className": "",
-        "x": 390,
-        "y": 120,
-        "wires": [
-            [
-                "5a3f93ca282cb0ed"
-            ]
-        ]
-    },
-    {
-        "id": "5a3f93ca282cb0ed",
-        "type": "function",
-        "z": "564bee57072d1e51",
-        "name": "Stringify",
-        "func": "\nmsg.payload = {\n    d: { valve : msg.payload}\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 540,
-        "y": 120,
-        "wires": [
-            [
-                "2a0cd17675ec287f"
-            ]
-        ]
-    },
-    {
-        "id": "c51965c804478af9",
-        "type": "function",
-        "z": "564bee57072d1e51",
-        "name": "Valve",
-        "func": "if(typeof msg.payload === 'string') msg.payload = JSON.parse(msg.payload);\n\nmsg.payload = msg.payload.d.valve;\nreturn  msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 210,
-        "y": 120,
-        "wires": [
-            [
-                "ba1f80572ba8191e"
+                "55e346563beafe8e"
             ]
         ]
     },
@@ -259,64 +27,405 @@
         "type": "function",
         "z": "564bee57072d1e51",
         "name": "Automate",
-        "func": "if (typeof msg.payload === 'string') msg.payload = JSON.parse(msg.payload);\n\nlet evt1 = { d : {}};\n\nif (msg.payload.d.target > msg.payload.d.temperature) {\n    evt1.d.valve = 'on';\n} else {\n    evt1.d.valve = 'off';  \n}\nreturn {payload : evt1};",
+        "func": "let evt1 = { d : {}};\n\nif (msg.payload.d.target > msg.payload.d.temperature) {\n    evt1.d.valve = 'on';\n} else {\n    evt1.d.valve = 'off';  \n}\nreturn {payload : evt1};",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 180,
+        "x": 540,
+        "y": 240,
         "wires": [
             [
-                "2a0cd17675ec287f"
+                "ca8e68ad4e467916"
             ]
         ]
     },
     {
-        "id": "058eb66efff7027a",
-        "type": "mqtt-broker",
-        "name": "allApp",
-        "broker": "mqtt",
+        "id": "65b79b9a782176dd",
+        "type": "ui-switch",
+        "z": "564bee57072d1e51",
+        "name": "",
+        "label": "Valve",
+        "group": "4fbe822ae10e2cd6",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "on",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "off",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 530,
+        "y": 160,
+        "wires": [
+            [
+                "e42414333e37f64b"
+            ]
+        ]
+    },
+    {
+        "id": "cf76d755451f19c2",
+        "type": "ui-slider",
+        "z": "564bee57072d1e51",
+        "group": "4fbe822ae10e2cd6",
+        "name": "",
+        "label": "Target",
+        "tooltip": "",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "thumbLabel": "always",
+        "showTicks": "false",
+        "min": 0,
+        "max": "50",
+        "step": 1,
+        "className": "",
+        "iconPrepend": "",
+        "iconAppend": "",
+        "color": "",
+        "colorTrack": "",
+        "colorThumb": "",
+        "showTextField": false,
+        "x": 530,
+        "y": 320,
+        "wires": [
+            [
+                "eb508a87713e70f3"
+            ]
+        ]
+    },
+    {
+        "id": "55e346563beafe8e",
+        "type": "ui-gauge",
+        "z": "564bee57072d1e51",
+        "name": "",
+        "group": "4fbe822ae10e2cd6",
+        "order": 0,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Current",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "10",
+                "color": "#02f707",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "25",
+                "color": "#e8ff3d",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "32",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "10",
+        "max": "50",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 540,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fe3f0ed9ef5fa7fa",
+        "type": "io7 in",
+        "z": "564bee57072d1e51",
+        "name": "",
+        "deviceId": "valve1",
+        "authentication": "798f13d57b18556b",
+        "evt": "+",
+        "fmt": "json",
+        "qos": "0",
+        "allDevices": false,
+        "allEvents": true,
+        "allFormats": false,
+        "x": 190,
+        "y": 160,
+        "wires": [
+            [
+                "4eb15b446cdfb80d"
+            ]
+        ]
+    },
+    {
+        "id": "ca8e68ad4e467916",
+        "type": "io7 out",
+        "z": "564bee57072d1e51",
+        "authentication": "798f13d57b18556b",
+        "name": "",
+        "deviceId": "valve1",
+        "cmd": "power",
+        "fmt": "json",
+        "qos": "0",
+        "retain": "false",
+        "x": 890,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "6240eb6db4c2e144",
+        "type": "io7 in",
+        "z": "564bee57072d1e51",
+        "name": "",
+        "deviceId": "thermostat1",
+        "authentication": "798f13d57b18556b",
+        "evt": "+",
+        "fmt": "json",
+        "qos": "0",
+        "allDevices": false,
+        "allEvents": true,
+        "allFormats": false,
+        "x": 210,
+        "y": 340,
+        "wires": [
+            [
+                "47e02b3278e24937",
+                "fa91568bdda49290"
+            ]
+        ]
+    },
+    {
+        "id": "74e1f1bd60b461eb",
+        "type": "io7 out",
+        "z": "564bee57072d1e51",
+        "authentication": "798f13d57b18556b",
+        "name": "",
+        "deviceId": "thermostat1",
+        "cmd": "power",
+        "fmt": "json",
+        "qos": "0",
+        "retain": "false",
+        "x": 870,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "4eb15b446cdfb80d",
+        "type": "change",
+        "z": "564bee57072d1e51",
+        "name": "valve",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.d.valve",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "65b79b9a782176dd"
+            ]
+        ]
+    },
+    {
+        "id": "e42414333e37f64b",
+        "type": "change",
+        "z": "564bee57072d1e51",
+        "name": "valve msg",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{ \"d\" : { \"valve\": msg.payload}}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 700,
+        "y": 160,
+        "wires": [
+            [
+                "ca8e68ad4e467916"
+            ]
+        ]
+    },
+    {
+        "id": "eb508a87713e70f3",
+        "type": "change",
+        "z": "564bee57072d1e51",
+        "name": "target msg",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{ \"d\" : { \"target\": msg.payload}}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 340,
+        "wires": [
+            [
+                "74e1f1bd60b461eb"
+            ]
+        ]
+    },
+    {
+        "id": "4fbe822ae10e2cd6",
+        "type": "ui-group",
+        "name": "Group 1",
+        "page": "4fc255cbc82c3e29",
+        "width": "4",
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "798f13d57b18556b",
+        "type": "io7-hub",
+        "name": "",
+        "host": "mqtt",
+        "useTLS": false,
+        "knownPort": true,
         "port": "1883",
-        "clientid": "",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
+        "tls": "",
+        "clientid": ""
     },
     {
-        "id": "78f185e02cacef3a",
-        "type": "ui_group",
-        "name": "Thermostat",
-        "tab": "4f3e456c10faa0c5",
-        "order": 2,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
+        "id": "4fc255cbc82c3e29",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "0b8fb0f2e8807515",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "82e83d8b5c80b4f7",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": 0,
+                "cols": 3
+            },
+            {
+                "name": "Tablet",
+                "px": 576,
+                "cols": 6
+            },
+            {
+                "name": "Small Desktop",
+                "px": 768,
+                "cols": 9
+            },
+            {
+                "name": "Desktop",
+                "px": 1024,
+                "cols": 12
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": false
     },
     {
-        "id": "4f3e456c10faa0c5",
-        "type": "ui_tab",
-        "name": "Thermostat",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
+        "id": "0b8fb0f2e8807515",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "82e83d8b5c80b4f7",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "1f8bcab4532b5990",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.29.0",
+            "node-red-contrib-io7": "0.1.8"
+        }
     }
 ]
