@@ -19,3 +19,8 @@ It can work with the io7 IoT Thermostat https://github.com/iotlab101/IOTValve826
 8. Import the flow by pasting to the Import window of the NodeRED
 9. Install NodeRED Dashboard @flowfuse/node-red-dashboard
 10. Finish the NodeRED flow setting with AppID for io7 in/out node
+
+---
+### io7 IoT Platform can be installed by following these youtubes
+* https://www.youtube.com/watch?v=ERqRcgKMdoE
+* https://www.youtube.com/watch?v=18xfq__oo4E
